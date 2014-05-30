@@ -33,6 +33,8 @@ namespace Kinect_to_BVH_Console
                         {
                             Console.WriteLine("start record");
                             fun.Start_record();
+                            if (fun.BVHFile == null && fun.sensor != null)
+                                fun.Kinect_start("default");
                             break;
                         }
                     case "t":

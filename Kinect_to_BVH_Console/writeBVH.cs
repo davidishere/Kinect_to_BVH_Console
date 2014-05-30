@@ -15,7 +15,7 @@ namespace Kinect_to_BVH_Console
     {
         private bool recording = false;
         StreamWriter file;
-        private bool initializing = false;
+        public bool initializing = false;
         public int intializingCounter = 0;
         string fileName;
         //TextFelder textFeld;
@@ -25,8 +25,8 @@ namespace Kinect_to_BVH_Console
         private double avgFrameRate = 0;
         private double elapsedTimeSec = 0;
 
-        BVHSkeleton bvhSkeleton = new BVHSkeleton();
-        BVHSkeleton bvhSkeletonWritten = new BVHSkeleton();
+        public BVHSkeleton bvhSkeleton = new BVHSkeleton();
+        public BVHSkeleton bvhSkeletonWritten = new BVHSkeleton();
         double[,] tempOffsetMatrix;
         double[] tempMotionVektor;
 
@@ -147,7 +147,6 @@ namespace Kinect_to_BVH_Console
                 }
             }
 
-            this.initializing = false;
             writeEntry();
             file.Flush();
         }
@@ -184,14 +183,27 @@ namespace Kinect_to_BVH_Console
                 BVHBone currentBone = bonesListList.Last().First();
                 string tabs = calcTabs(currentBone);
                 if (currentBone.Root == true)
+                {
                     file.WriteLine("ROOT " + currentBone.Name);
+                    Console.WriteLine("ROOT " + currentBone.Name);
+                }
                 else if (currentBone.End == true)
+                {
                     file.WriteLine(tabs + "End Site");
+                    Console.WriteLine(tabs + "End Site");
+                }
                 else
+                {
                     file.WriteLine(tabs + "JOINT " + currentBone.Name);
+                    Console.WriteLine(tabs + "JOINT " + currentBone.Name);
+                }
 
                 file.WriteLine(tabs + "{");
                 file.WriteLine(tabs + "\tOFFSET " + currentBone.translOffset[0].ToString().Replace(",", ".") +
+                    " " + currentBone.translOffset[1].ToString().Replace(",", ".") +
+                    " " + currentBone.translOffset[2].ToString().Replace(",", "."));
+                Console.WriteLine(tabs + "{");
+                Console.WriteLine(tabs + "\tOFFSET " + currentBone.translOffset[0].ToString().Replace(",", ".") +
                     " " + currentBone.translOffset[1].ToString().Replace(",", ".") +
                     " " + currentBone.translOffset[2].ToString().Replace(",", "."));
 
@@ -229,6 +241,7 @@ namespace Kinect_to_BVH_Console
                 {
                     // 写"CHANNELS 3 Xrotation Yrotation Zrotation"
                     file.WriteLine(tabs + "\t" + writeChannels(currentBone));
+                    Console.WriteLine(tabs + "\t" + writeChannels(currentBone));
                 }
                 bvhSkeleton.Bones.Remove(currentBone);
                 bvhSkeletonWritten.AddBone(currentBone);
@@ -239,6 +252,7 @@ namespace Kinect_to_BVH_Console
         public void Motion(Skeleton skel)
         {
             sw.Start(); //Recording the movements begins
+            Console.WriteLine("----{0}----", bvhSkeletonWritten.Bones.Count);
 
             for (int k = 0; k < bvhSkeletonWritten.Bones.Count; k++)
             {
@@ -279,6 +293,9 @@ namespace Kinect_to_BVH_Console
                 file.WriteLine("MOTION");
                 file.WriteLine("Frames: PLATZHALTERFRAMES");
                 file.WriteLine("Frame Time: 0.0333333");
+                Console.WriteLine("MOTION");
+                Console.WriteLine("Frames: PLATZHALTERFRAMES");
+                Console.WriteLine("Frame Time: 0.0333333");
             }
             foreach (var i in tempMotionVektor)
             {
@@ -286,6 +303,7 @@ namespace Kinect_to_BVH_Console
             }
 
             file.WriteLine(motionStringValues);
+            Console.WriteLine(motionStringValues);
 
             frameCounter++;
         }

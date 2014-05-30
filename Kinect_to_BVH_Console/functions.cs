@@ -9,8 +9,8 @@ namespace Kinect_to_BVH_Console
 {
     class functions
     {
-        private KinectSensor sensor;
-        private writeBVH BVHFile;
+        public KinectSensor sensor;
+        public writeBVH BVHFile;
 
         public functions() {
             ;
@@ -33,7 +33,16 @@ namespace Kinect_to_BVH_Console
                         break;
                     }
                 }
-
+//----OPEN BVHfile to write----------------------------------------------------
+                if (BVHFile == null && sensor != null)
+                {
+                    Console.WriteLine("File initialize.");
+                    DateTime thisDay = DateTime.UtcNow;
+                    string txtFileName = thisDay.ToString("dd.MM.yyyy_HH.mm");
+                    BVHFile = new writeBVH(txtFileName);
+                    Console.WriteLine("+++{0}+++", BVHFile.bvhSkeletonWritten.Bones.Count);
+                }
+//-----------------------------------------------------------
                 if (null != this.sensor)
                 {
                     TransformSmoothParameters smoothingParam = new TransformSmoothParameters();
@@ -113,7 +122,7 @@ namespace Kinect_to_BVH_Console
 
         void sensor_allFramesReady(object sender, AllFramesReadyEventArgs e)
         {
-            int initFrames = 100;  // ??
+            int initFrames = 100;
             using (SkeletonFrame skelFrame = e.OpenSkeletonFrame())
             {
                 if (skelFrame != null)
@@ -124,9 +133,10 @@ namespace Kinect_to_BVH_Console
                     {
                         foreach (Skeleton skel in skeletons)
                         {
-                            if (skel.TrackingState == SkeletonTrackingState.Tracked)
+                            if (skel.TrackingState == SkeletonTrackingState.Tracked && 
+                                skel.Joints[JointType.ShoulderCenter].TrackingState == JointTrackingState.Tracked )
                             {
-                                if (BVHFile != null)
+                                if (BVHFile != null)                                
                                 {
                                     if (BVHFile.isRecording == true && BVHFile.isInitializing == true)
                                     {
@@ -144,6 +154,8 @@ namespace Kinect_to_BVH_Console
                                         Console.WriteLine("Record");
                                     }
                                 }
+                                // 防止捕捉到2个人
+                                break;
                             }
                         }
                     }
@@ -174,11 +186,17 @@ namespace Kinect_to_BVH_Console
         {
             if (BVHFile == null && sensor != null)
             {
-                Console.WriteLine("File initialize.");
+                Console.WriteLine("File initialize. Again!!!!");
                 DateTime thisDay = DateTime.UtcNow;
                 string txtFileName = thisDay.ToString("dd.MM.yyyy_HH.mm");
                 BVHFile = new writeBVH(txtFileName);
+                Console.WriteLine("+++{0}+++", BVHFile.bvhSkeletonWritten.Bones.Count);
+
+                BVHFile.initializing = false;
+
+                //Kinect_start("default");
             }
+            BVHFile.initializing = false;
         }
 
         public void Stop_record()
