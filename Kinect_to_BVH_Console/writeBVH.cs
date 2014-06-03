@@ -22,8 +22,6 @@ namespace Kinect_to_BVH_Console
         Stopwatch sw = new Stopwatch();
 
         private int frameCounter = 0;
-        private double avgFrameRate = 0;
-        private double elapsedTimeSec = 0;
 
         public BVHSkeleton bvhSkeleton = new BVHSkeleton();
         public BVHSkeleton bvhSkeletonWritten = new BVHSkeleton();
@@ -221,6 +219,7 @@ namespace Kinect_to_BVH_Console
                         }
                         bonesListList.Remove(bonesListList.Last());
                         file.WriteLine(tabs + "}");
+                        Console.WriteLine(tabs + "}");
                     }
 
                     if (bonesListList.Count != 0)
@@ -235,6 +234,7 @@ namespace Kinect_to_BVH_Console
                         }
                         tabs = calcTabs(bonesListList.Last()[0]);
                         file.WriteLine(tabs + "}");
+                        Console.WriteLine(tabs + "}");
                     }
                 }
                 else
@@ -281,7 +281,6 @@ namespace Kinect_to_BVH_Console
 
             writeMotion(tempMotionVektor);
             file.Flush();
-
         }
 
         private void writeMotion(double[] tempMotionVektor)

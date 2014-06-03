@@ -13,28 +13,33 @@ namespace Kinect_to_BVH_Console
         {
             bool flag = true;
             functions fun = new functions();
+            Console.WriteLine("--------------------------------------");
+            Console.WriteLine("Please input:");
+            Console.WriteLine("     s : Start the Kinect");
+            Console.WriteLine("     r : Start record");
+            Console.WriteLine("     t : Stop record");
+            Console.WriteLine("     q : Stop the Kinect and quit");
+            Console.WriteLine("--------------------------------------");
             while (flag) { 
                 string temp = Console.ReadLine();            
                 switch (temp) {
                     case "s": 
                         { 
                             Console.WriteLine("start");
-                            fun.Kinect_start("default");
+                            fun.Kinect_start("Default"); // Default Moderate Intense
                             break;
                         }
                     case "q":
                         {
                             Console.WriteLine("quit");
-                            fun.Kinect_stop();
-                            flag = false;
+                            if (fun.Kinect_stop() == 0)
+                                flag = false;
                             break;
                         }
                     case "r":
                         {
                             Console.WriteLine("start record");
                             fun.Start_record();
-                            if (fun.BVHFile == null && fun.sensor != null)
-                                fun.Kinect_start("default");
                             break;
                         }
                     case "t":
